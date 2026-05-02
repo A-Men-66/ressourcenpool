@@ -632,19 +632,39 @@
         .login-screen {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, var(--primary-color), #2563eb);
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #f0f4ff;
             z-index: 2000;
-            align-items: center;
-            justify-content: center;
+            overflow-y: auto;
         }
+        .login-screen.active { display: block; }
 
-        .login-screen.active {
-            display: flex;
-        }
+        /* Landing Header */
+        .landing-header { background: linear-gradient(135deg, #2563eb, #7c3aed); color: white; box-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+        .landing-header-inner { max-width: 1100px; margin: 0 auto; padding: 14px 20px 0; }
+        .landing-brand h1 { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 4px; }
+        .landing-brand .sub { font-size: 0.85rem; opacity: 0.85; margin: 2px 0; }
+        .landing-brand .attr { font-size: 0.75rem; opacity: 0.6; margin-top: 2px; }
+        .landing-brand .attr a { color: inherit; text-decoration: underline; opacity: 0.85; }
+        .landing-nav { display: flex; gap: 4px; border-top: 1px solid rgba(255,255,255,0.2); margin-top: 12px; overflow-x: auto; }
+        .landing-nav button { background: none; border: none; color: rgba(255,255,255,0.8); padding: 10px 16px; cursor: pointer; font-size: 0.9rem; border-bottom: 3px solid transparent; white-space: nowrap; transition: all 0.15s; font-family: inherit; }
+        .landing-nav button:hover { color: white; }
+        .landing-nav button.lnav-active { color: white; border-bottom-color: white; }
+
+        /* Landing Hero */
+        .landing-hero { text-align: center; padding: 48px 20px 36px; background: white; border-bottom: 1px solid #e5e7eb; }
+        .landing-hero h2 { font-size: 2.2rem; font-weight: 800; color: #1d4ed8; margin-bottom: 12px; line-height: 1.2; }
+        .landing-hero .hero-sub { font-size: 1.05rem; color: #6b7280; max-width: 520px; margin: 0 auto 28px; }
+        .landing-cta { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+        .landing-main { max-width: 1100px; margin: 0 auto; padding: 28px 20px 48px; }
+        .landing-how { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-top: 4px; }
+        .how-card { background: white; border-radius: 12px; padding: 14px 16px; text-align: center; border: 1px solid #e5e7eb; }
+        .how-card .how-icon { font-size: 1.8rem; margin-bottom: 6px; }
+        .how-card h3 { color: #1d4ed8; font-size: 1rem; margin-bottom: 4px; font-weight: 700; }
+        .how-card p { font-size: 0.88rem; color: #6b7280; line-height: 1.5; }
+        .landing-login-box { background: white; border-radius: 12px; padding: 32px; max-width: 420px; width: 100%; margin: 0 auto; border: 1px solid #e5e7eb; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+        .landing-anmeld { background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px; text-align: center; margin-top: 16px; }
+        @media (max-width: 640px) { .landing-hero h2 { font-size: 1.6rem; } .landing-main { padding: 20px 16px 40px; } }
 
         .login-box {
             background: white;
@@ -1183,82 +1203,129 @@
 <body>
     <!-- Login Screen -->
     <div class="login-screen" id="login-screen">
+
+        <!-- Gemeinsamer Header -->
+        <div class="landing-header">
+            <div class="landing-header-inner">
+                <div class="landing-brand">
+                    <h1 id="landing-title">RessourcenPool <span class="version-badge" style="background:rgba(255,255,255,0.2);padding:3px 10px;border-radius:4px;font-size:0.78rem;margin-left:8px;vertical-align:middle;">v1.8</span></h1>
+                    <p class="sub" id="landing-subtitle">Ein virtueller Ort wo Menschen Ressourcen sichtbar machen können.</p>
+                    <p class="attr">Ein freies Werkzeug von <a href="https://andreas-artmann.de" target="_blank" rel="noopener">Andreas Artmann &middot; Transformationslogistiker</a></p>
+                </div>
+                <nav class="landing-nav" id="landing-nav">
+                    <button class="lnav-active" id="lnav-start" onclick="landingNav('start')">&#127968; Start</button>
+                    <button id="lnav-how" onclick="landingNav('how')">&#128218; Wie es funktioniert</button>
+                    <button id="lnav-login" onclick="landingNav('login')">&#128273; Anmelden</button>
+                </nav>
+            </div>
+        </div>
+
         <!-- Modus A: nur Login-Box -->
-        <div id="landing-mode-a">
-            <div class="login-box">
-                <h2 id="landing-title">🤝 Willkommen beim RessourcenPool</h2>
-                <p id="landing-subtitle">Ein virtueller Ort wo Menschen Ressourcen sichtbar machen können.</p>
-                <form id="login-form">
-                    <div class="form-group">
-                        <label for="login-username">Benutzername</label>
-                        <input type="text" id="login-username" required placeholder="Benutzername">
-                    </div>
-                    <div class="form-group">
-                        <label for="login-password">Passwort</label>
-                        <div style="position: relative;">
-                            <input type="password" id="login-password" required style="padding-right: 45px;">
-                            <button type="button" id="toggle-password" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 1.2rem; color: var(--text-secondary);" title="Passwort anzeigen/verbergen">👁️</button>
+        <div id="landing-mode-a" style="display:none;">
+            <div class="landing-hero">
+                <h2>Ressourcen sichtbar machen.<br>Gemeinsam mehr erreichen.</h2>
+                <p class="hero-sub">Teile was du hast &mdash; finde was du brauchst. Direkt, lokal, ohne Umwege.</p>
+                <div class="landing-cta">
+                    <button class="btn btn-primary btn-lg" onclick="document.getElementById('landing-login-a').scrollIntoView({behavior:'smooth'})">&#128273; Anmelden</button>
+                </div>
+            </div>
+            <div class="landing-main" id="landing-anmeld-section">
+                <div class="landing-login-box" id="landing-login-a">
+                    <form id="login-form">
+                        <div class="form-group">
+                            <label for="login-username">Benutzername</label>
+                            <input type="text" id="login-username" required placeholder="Benutzername">
                         </div>
-                    </div>
-                    <div style="margin-top: 20px;">
-                        <button type="submit" class="btn btn-primary" style="width: 100%;">Anmelden</button>
-                    </div>
-                </form>
+                        <div class="form-group">
+                            <label for="login-password">Passwort</label>
+                            <div style="position:relative;">
+                                <input type="password" id="login-password" required style="padding-right:45px;">
+                                <button type="button" id="toggle-password" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:1.2rem;color:#6b7280;" title="Passwort anzeigen/verbergen">&#128065;&#65039;</button>
+                            </div>
+                        </div>
+                        <div style="margin-top:20px;">
+                            <button type="submit" class="btn btn-primary" style="width:100%;">Anmelden</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
 
         <!-- Modus B: Ressourcen-Vorschau -->
-        <div id="landing-mode-b" style="display:none; max-width:1000px; margin:0 auto; padding:20px;">
-            <div style="text-align:center; padding:32px 20px 24px;">
-                <h1 id="landing-b-title" style="font-size:2rem; font-weight:800; color:#fff; margin-bottom:8px; text-shadow:0 1px 3px rgba(0,0,0,0.2);">RessourcenPool</h1>
-                <p id="landing-b-subtitle" style="color:rgba(255,255,255,0.85); font-size:1.05rem; margin-bottom:20px;">Ein virtueller Ort wo Menschen Ressourcen sichtbar machen können.</p>
+        <div id="landing-mode-b" style="display:none;">
+            <div class="landing-hero">
+                <h2 id="landing-b-title">Was teilt deine Gemeinschaft?</h2>
+                <p class="hero-sub" id="landing-b-subtitle">Melde dich an um alle Ressourcen zu sehen, anzufragen und selbst einzutragen.</p>
+                <div class="landing-cta">
+                    <button class="btn btn-primary btn-lg" onclick="document.getElementById('landing-b-anmeld').scrollIntoView({behavior:'smooth'})">&#128273; Jetzt anmelden</button>
+                </div>
             </div>
-            <h3 style="margin-bottom:12px; color:#fff; font-weight:700;">📦 Aktuelle Ressourcen</h3>
-            <div id="public-ressourcen-grid" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:12px; margin-bottom:24px;"></div>
-            <div style="text-align:center; padding:20px; background:rgba(255,255,255,0.15); border-radius:12px; border:1px solid rgba(255,255,255,0.3);">
-                <p style="margin-bottom:12px; color:rgba(255,255,255,0.9);">Melde dich an um alle Ressourcen zu sehen und anzufragen.</p>
-                <button onclick="document.getElementById('landing-mode-b').style.display='none'; document.getElementById('landing-mode-a').style.display='block';" class="btn btn-primary">Jetzt anmelden</button>
+            <div class="landing-main">
+                <h3 style="font-weight:700;color:#1d4ed8;margin-bottom:14px;">&#128230; Aktuelle Ressourcen</h3>
+                <div id="public-ressourcen-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:24px;"></div>
+                <div class="landing-anmeld" id="landing-b-anmeld">
+                    <p style="margin-bottom:14px;color:#6b7280;">Melde dich an um alle Ressourcen zu sehen und anzufragen.</p>
+                    <button onclick="document.getElementById('landing-mode-b').style.display='none';document.getElementById('landing-mode-a').style.display='block';window.scrollTo(0,0);" class="btn btn-primary">&#128273; Jetzt anmelden</button>
+                </div>
             </div>
         </div>
 
         <!-- Modus C: Feature-Showcase -->
-        <div id="landing-mode-c" style="display:none; max-width:800px; margin:0 auto; padding:20px;">
-            <div style="text-align:center; padding:32px 20px 24px;">
-                <h1 id="landing-c-title" style="font-size:2rem; font-weight:800; color:#fff; margin-bottom:8px; text-shadow:0 1px 3px rgba(0,0,0,0.2);">RessourcenPool</h1>
-                <p id="landing-c-subtitle" style="color:rgba(255,255,255,0.85); font-size:1.05rem; margin-bottom:8px;">Ein virtueller Ort wo Menschen Ressourcen sichtbar machen können.</p>
-            </div>
-            <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; margin-bottom:28px;">
-                <div style="background:var(--card-bg); border:1px solid var(--border-color); border-radius:12px; padding:20px; text-align:center;">
-                    <div style="font-size:2rem; margin-bottom:10px;">📦</div>
-                    <h3 style="margin-bottom:8px; color:var(--text-color);">Ressourcen</h3>
-                    <p style="color:var(--text-secondary); font-size:0.9rem;">Teile was du hast — finde was du brauchst. Verleihen, verschenken, tauschen.</p>
-                </div>
-                <div style="background:var(--card-bg); border:1px solid var(--border-color); border-radius:12px; padding:20px; text-align:center;">
-                    <div style="font-size:2rem; margin-bottom:10px;">🔔</div>
-                    <h3 style="margin-bottom:8px; color:var(--text-color);">Suchagenten</h3>
-                    <p style="color:var(--text-secondary); font-size:0.9rem;">Beschreibe was du suchst — du wirst benachrichtigt sobald es auftaucht.</p>
-                </div>
-                <div style="background:var(--card-bg); border:1px solid var(--border-color); border-radius:12px; padding:20px; text-align:center;">
-                    <div style="font-size:2rem; margin-bottom:10px;">🃏</div>
-                    <h3 style="margin-bottom:8px; color:var(--text-color);">Joker</h3>
-                    <p style="color:var(--text-secondary); font-size:0.9rem;">Ungewöhnlicher Bedarf? Die Community antwortet kreativ auf offene Anfragen.</p>
+        <div id="landing-mode-c" style="display:none;">
+            <div class="landing-hero">
+                <h2 id="landing-c-title">Was du teilen kannst,<br>wird gefunden.</h2>
+                <p class="hero-sub" id="landing-c-subtitle">Ein virtueller Ort wo Menschen Ressourcen sichtbar machen k&ouml;nnen.</p>
+                <div class="landing-cta">
+                    <button class="btn btn-outline btn-lg" onclick="document.getElementById('landing-how-section').scrollIntoView({behavior:'smooth'})">&#8595; Mehr erfahren</button>
                 </div>
             </div>
-            <div class="login-box" style="margin:0 auto;">
-                <p style="text-align:center; margin-bottom:16px; color:var(--text-secondary);">Melde dich an um loszulegen:</p>
-                <form id="login-form-c">
-                    <div class="form-group">
-                        <label>Benutzername</label>
-                        <input type="text" id="login-username-c" required>
+            <div class="landing-main">
+                <div class="landing-how" id="landing-how-section">
+                    <div class="how-card">
+                        <div class="how-icon">&#128230;</div>
+                        <h3>Ressourcen</h3>
+                        <p>Teile was du hast &mdash; finde was du brauchst. Verleihen, verschenken, tauschen.</p>
                     </div>
-                    <div class="form-group">
-                        <label>Passwort</label>
-                        <input type="password" id="login-password-c" required>
+                    <div class="how-card">
+                        <div class="how-icon">&#128276;</div>
+                        <h3>Suchagenten</h3>
+                        <p>Beschreibe was du suchst &mdash; du wirst benachrichtigt sobald es auftaucht.</p>
                     </div>
-                    <button type="submit" class="btn btn-primary" style="width:100%;">Anmelden</button>
-                </form>
+                    <div class="how-card">
+                        <div class="how-icon">&#127183;</div>
+                        <h3>Joker</h3>
+                        <p>Ungew&ouml;hnlicher Bedarf? Die Community antwortet kreativ auf offene Anfragen.</p>
+                    </div>
+                </div>
+                <div id="landing-c-ressourcen" style="margin-top:28px;">
+                    <h3 style="font-weight:700;color:#1d4ed8;margin-bottom:14px;">&#128230; Aktuelle Ressourcen</h3>
+                    <div id="public-ressourcen-grid-c" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:8px;"></div>
+                </div>
+                <div class="landing-login-box" id="landing-c-login" style="margin-top:32px;">
+                    <p style="text-align:center;margin-bottom:18px;color:#6b7280;font-size:0.95rem;">Melde dich an um loszulegen:</p>
+                    <form id="login-form-c">
+                        <div class="form-group">
+                            <label>Benutzername</label>
+                            <input type="text" id="login-username-c" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Passwort</label>
+                            <input type="password" id="login-password-c" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width:100%;">Anmelden</button>
+                    </form>
+                </div>
             </div>
         </div>
+
+        <footer style="border-top:1px solid #e5e7eb; margin-top:40px; padding:14px 20px; font-size:0.78rem; color:#6b7280; text-align:center;">
+            <a href="https://www.gnu.org/licenses/agpl-3.0.de.html" target="_blank" rel="noopener" style="color:#6b7280;">GNU AGPL v3.0</a> &middot;
+            <a href="https://github.com/A-Men-66/ressourcenpool" target="_blank" rel="noopener" style="color:#6b7280;">Quellcode</a> &middot;
+            <a href="https://claude.ai/code" target="_blank" rel="noopener" style="color:#6b7280;">Claude Code</a> &middot;
+            <a href="https://andreas-artmann.de/impressum/" target="_blank" rel="noopener" style="color:#6b7280;">Impressum</a> &middot;
+            <a href="https://andreas-artmann.de/datenschutz-apps/" target="_blank" rel="noopener" style="color:#6b7280;">Datenschutz</a> &middot;
+            <a href="https://andreas-artmann.de/haftungsausschluss/" target="_blank" rel="noopener" style="color:#6b7280;">Haftungsausschluss</a>
+        </footer>
     </div>
 
     <!-- Invite Screen -->
@@ -2502,8 +2569,42 @@
             showLogin();
         }
 
+
+        function landingNav(tab) {
+            document.querySelectorAll('#landing-nav button').forEach(b => b.classList.remove('lnav-active'));
+            document.getElementById('lnav-' + tab)?.classList.add('lnav-active');
+            if (tab === 'start') {
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            } else if (tab === 'how') {
+                const el = document.getElementById('landing-how-section');
+                if (el) el.scrollIntoView({behavior: 'smooth'});
+            } else if (tab === 'login') {
+                const ids = ['landing-c-login', 'landing-login-a', 'landing-b-anmeld'];
+                for (const id of ids) {
+                    const el = document.getElementById(id);
+                    if (el) { el.scrollIntoView({behavior: 'smooth'}); break; }
+                }
+            }
+        }
+
+        function toggleRessourcenC() {
+            const sec = document.getElementById('landing-c-ressourcen');
+            const btn = document.getElementById('btn-show-ressourcen-c');
+            if (!sec) return;
+            if (sec.style.display === 'none') {
+                sec.style.display = 'block';
+                btn.textContent = '\u2715 Ressourcen ausblenden';
+                // Grid befüllen falls leer
+                const grid = document.getElementById('public-ressourcen-grid-c');
+                if (grid && grid.children.length === 0) ladePublicRessourcenInto(grid);
+                setTimeout(() => sec.scrollIntoView({behavior:'smooth'}), 100);
+            } else {
+                sec.style.display = 'none';
+                btn.innerHTML = '&#128230; Ressourcen ansehen';
+            }
+        }
         function applyLandingModus(cfg) {
-            const modus = cfg.landing_modus || 'A';
+            const modus = cfg.landing_modus || 'C';
             const title = cfg.app_name || 'RessourcenPool';
             const subtitle = cfg.app_untertitel || 'Ein virtueller Ort wo Menschen Ressourcen sichtbar machen können.';
             ['a','b','c'].forEach(m => {
@@ -2512,13 +2613,40 @@
             });
             const active = document.getElementById('landing-mode-' + modus.toLowerCase());
             if (active) active.style.display = '';
-            ['landing-title','landing-b-title','landing-c-title'].forEach(id => {
+            ['landing-title','landing-b-title'].forEach(id => {
                 const el = document.getElementById(id); if (el) el.textContent = '🤝 ' + title;
             });
-            ['landing-subtitle','landing-b-subtitle','landing-c-subtitle'].forEach(id => {
+            ['landing-subtitle','landing-b-subtitle'].forEach(id => {
                 const el = document.getElementById(id); if (el) el.textContent = subtitle;
             });
             if (modus === 'B') ladePublicRessourcen();
+            if (modus === 'C') {
+                const grid = document.getElementById('public-ressourcen-grid-c');
+                if (grid && grid.children.length === 0) ladePublicRessourcenInto(grid);
+            }
+        }
+
+        async function ladePublicRessourcenInto(grid) {
+            try {
+                const res = await fetch('/api/ressourcen/public');
+                const items = await res.json();
+                if (!items.length) {
+                    grid.innerHTML = '<p style="color:#6b7280">Noch keine Ressourcen vorhanden.</p>';
+                    return;
+                }
+                const typLabel = {verleihen:'verleihen',verschenken:'verschenken',tauschen:'tauschen',verkaufen:'verkaufen'};
+                grid.innerHTML = items.map(r => {
+                    const img = r.bild
+                        ? '<img src="/uploads/' + r.bild + '" style="width:100%;height:130px;object-fit:cover;">'
+                        : '<div style="width:100%;height:130px;background:#e5e7eb;display:flex;align-items:center;justify-content:center;font-size:2.5rem;">&#128230;</div>';
+                    return '<div style="background:rgba(255,255,255,0.95);border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.12);">'
+                        + img
+                        + '<div style="padding:10px 12px 12px;"><strong style="display:block;font-size:0.9rem;color:#111827;margin-bottom:3px;">' + r.name + '</strong>'
+                        + '<span style="font-size:0.75rem;color:#6b7280;background:#f3f4f6;padding:2px 7px;border-radius:10px;">' + (typLabel[r.typ] || r.typ) + '</span></div></div>';
+                }).join('');
+            } catch(e) {
+                grid.innerHTML = '<p style="color:#ef4444">Ressourcen konnten nicht geladen werden.</p>';
+            }
         }
 
         async function ladePublicRessourcen() {
